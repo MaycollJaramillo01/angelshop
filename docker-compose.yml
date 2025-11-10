@@ -1,0 +1,52 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: angelshop
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - '8025:8025'
+      - '1025:1025'
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: npm run dev
+    working_dir: /app
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/angelshop
+      JWT_SECRET: dev-secret
+      MAILHOG_HOST: mailhog
+      MAILHOG_PORT: 1025
+      CORS_ORIGIN: http://localhost:5173
+    ports:
+      - '4000:4000'
+    depends_on:
+      - postgres
+      - mailhog
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    command: npm run dev -- --host 0.0.0.0
+    working_dir: /app
+    environment:
+      VITE_API_URL: http://backend:4000/v1
+    ports:
+      - '5173:5173'
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

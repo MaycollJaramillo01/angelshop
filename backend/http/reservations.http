@@ -1,0 +1,23 @@
+### Crear reserva
+POST http://localhost:4000/v1/reservas
+Content-Type: application/json
+
+{
+  "varianteId": 1,
+  "nombre": "Cliente Demo",
+  "email": "demo@example.com",
+  "telefono": "600123123",
+  "ventanaHoras": 24
+}
+
+### Consultar reserva
+GET http://localhost:4000/v1/reservas/RESERVA1
+
+### Login admin
+POST http://localhost:4000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@angelshop.local",
+  "password": "admin123"
+}
