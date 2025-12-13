@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import { createReservation } from '../api/reservations';
 import { useToastStore } from '../app/store';
 import { useForm } from '../hooks/useForm';
+import { Badge, Button, Form, FormGroup, Input } from './Form';
 
 interface Props {
   varianteId: number | null;
@@ -47,53 +48,69 @@ export const ReserveForm = ({ varianteId }: Props) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="reserve-form"
-      aria-describedby="captcha-hint"
-    >
-      <div>
-        <label htmlFor="nombre">Nombre</label>
-        <input id="nombre" {...register('nombre')} required minLength={2} />
+    <Form onSubmit={handleSubmit} aria-describedby="captcha-hint">
+      <div className="form-grid">
+        <FormGroup label="Nombre" htmlFor="nombre">
+          <Input id="nombre" {...register('nombre')} required minLength={2} />
+        </FormGroup>
+        <FormGroup label="Email" htmlFor="email">
+          <Input id="email" type="email" {...register('email')} required />
+        </FormGroup>
+        <FormGroup label="Teléfono" htmlFor="telefono">
+          <Input
+            id="telefono"
+            {...register('telefono')}
+            required
+            minLength={6}
+          />
+        </FormGroup>
+        <FormGroup label="Cantidad" htmlFor="cantidad">
+          <Input
+            id="cantidad"
+            type="number"
+            min={1}
+            value={quantity}
+            onChange={(event) => setQuantity(Number(event.target.value))}
+            required
+          />
+        </FormGroup>
+        <FormGroup label="Ventana de recogida" htmlFor="ventanaHoras">
+          <select
+            id="ventanaHoras"
+            className="input"
+            {...register('ventanaHoras')}
+          >
+            <option value={24}>24 horas</option>
+            <option value={48}>48 horas</option>
+            <option value={72}>72 horas</option>
+          </select>
+        </FormGroup>
       </div>
-      <div>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="email" {...register('email')} required />
+      <div className="form-footer">
+        <div
+          className="captcha-mock"
+          role="status"
+          aria-live="polite"
+          id="captcha-hint"
+        >
+          reCAPTCHA desactivado en local.
+        </div>
+        <div className="form-actions">
+          <Badge tone={varianteId ? 'success' : 'danger'}>
+            {varianteId
+              ? 'Variante lista para reservar'
+              : 'Selecciona una variante'}
+          </Badge>
+          <Button
+            type="submit"
+            disabled={loading}
+            aria-busy={loading}
+            aria-live="polite"
+          >
+            {loading ? 'Reservando...' : 'Reservar sin pago'}
+          </Button>
+        </div>
       </div>
-      <div>
-        <label htmlFor="telefono">Teléfono</label>
-        <input id="telefono" {...register('telefono')} required minLength={6} />
-      </div>
-      <div>
-        <label htmlFor="cantidad">Cantidad</label>
-        <input
-          id="cantidad"
-          type="number"
-          min={1}
-          value={quantity}
-          onChange={(event) => setQuantity(Number(event.target.value))}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="ventanaHoras">Ventana de recogida</label>
-        <select id="ventanaHoras" {...register('ventanaHoras')}>
-          <option value={24}>24 horas</option>
-          <option value={48}>48 horas</option>
-          <option value={72}>72 horas</option>
-        </select>
-      </div>
-      <div
-        className="captcha-mock"
-        role="status"
-        aria-live="polite"
-        id="captcha-hint"
-      >
-        reCAPTCHA desactivado en local.
-      </div>
-      <button type="submit" className="button" disabled={loading}>
-        {loading ? 'Reservando...' : 'Reservar sin pago'}
-      </button>
-    </form>
+    </Form>
   );
 };
