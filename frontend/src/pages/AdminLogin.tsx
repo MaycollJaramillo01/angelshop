@@ -1,7 +1,17 @@
-import { FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
 import { useToastStore } from '../app/store';
+import {
+  Container,
+  Card,
+  CardBody,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Button
+} from 'reactstrap';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('admin@angelshop.local');
@@ -22,16 +32,41 @@ const AdminLogin = () => {
   };
 
   return (
-    <section className="admin-login">
-      <h1>Acceso admin</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email</label>
-        <input id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <label htmlFor="password">Contraseña</label>
-        <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <button type="submit" className="button">Entrar</button>
-      </form>
-    </section>
+    <Container className="admin-login">
+      <Card className="product-card">
+        <CardBody>
+          <h1>Acceso admin</h1>
+          <Form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
+            <FormGroup>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                value={email}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setEmail(e.target.value)
+                }
+                required
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="password">Contraseña</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.target.value)
+                }
+                required
+              />
+            </FormGroup>
+            <Button type="submit" color="dark">
+              Entrar
+            </Button>
+          </Form>
+        </CardBody>
+      </Card>
+    </Container>
   );
 };
 

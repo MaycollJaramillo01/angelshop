@@ -4,6 +4,15 @@ import { fetchProduct, Product } from '../api/products';
 import { VariantSelector } from '../components/VariantSelector';
 import { ReserveForm } from '../components/ReserveForm';
 import { useProductVariants } from '../hooks/useProductVariants';
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  CardBody,
+  CardText,
+  Badge
+} from 'reactstrap';
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -33,19 +42,33 @@ const ProductDetail = () => {
   }
 
   return (
-    <section className="product-detail">
-      <header>
-        <h1>{product.nombre}</h1>
-        <p>
-          {product.descripcion ?? 'Prenda disponible para reserva inmediata.'}
-        </p>
-      </header>
-      <VariantSelector
-        variants={variants}
-        selectedId={selected}
-        onSelect={setSelected}
-      />
-      <ReserveForm varianteId={selected} />
+    <section>
+      <Container>
+        <Row>
+          <Col md="6">
+            <Card className="product-card product-detail">
+              <CardBody>
+                <Badge color="dark">Edición boutique</Badge>
+                <h1>{product.nombre}</h1>
+                <CardText>
+                  {product.descripcion ??
+                    'Prenda disponible para reserva inmediata.'}
+                </CardText>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col md="6">
+            <div className="product-detail">
+              <VariantSelector
+                variants={variants}
+                selectedId={selected}
+                onSelect={setSelected}
+              />
+              <ReserveForm varianteId={selected} />
+            </div>
+          </Col>
+        </Row>
+      </Container>
     </section>
   );
 };

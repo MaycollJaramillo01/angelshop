@@ -1,7 +1,8 @@
-import { FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { createReservation } from '../api/reservations';
 import { useToastStore } from '../app/store';
 import { useForm } from '../hooks/useForm';
+import { Form, FormGroup, Input, Label, Button } from 'reactstrap';
 
 interface Props {
   varianteId: number | null;
@@ -47,42 +48,62 @@ export const ReserveForm = ({ varianteId }: Props) => {
   };
 
   return (
-    <form
+    <Form
       onSubmit={handleSubmit}
       className="reserve-form"
       aria-describedby="captcha-hint"
     >
-      <div>
-        <label htmlFor="nombre">Nombre</label>
-        <input id="nombre" {...register('nombre')} required minLength={2} />
-      </div>
-      <div>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="email" {...register('email')} required />
-      </div>
-      <div>
-        <label htmlFor="telefono">Teléfono</label>
-        <input id="telefono" {...register('telefono')} required minLength={6} />
-      </div>
-      <div>
-        <label htmlFor="cantidad">Cantidad</label>
-        <input
+      <FormGroup>
+        <Label htmlFor="nombre">Nombre</Label>
+        <Input
+          id="nombre"
+          {...register('nombre')}
+          required
+          minLength={2}
+          placeholder="Nombre y apellido"
+        />
+      </FormGroup>
+      <FormGroup>
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          {...register('email')}
+          required
+          placeholder="tu@email.com"
+        />
+      </FormGroup>
+      <FormGroup>
+        <Label htmlFor="telefono">Teléfono</Label>
+        <Input
+          id="telefono"
+          {...register('telefono')}
+          required
+          minLength={6}
+          placeholder="+34 600 000 000"
+        />
+      </FormGroup>
+      <FormGroup>
+        <Label htmlFor="cantidad">Cantidad</Label>
+        <Input
           id="cantidad"
           type="number"
           min={1}
           value={quantity}
-          onChange={(event) => setQuantity(Number(event.target.value))}
+          onChange={(event: ChangeEvent<HTMLInputElement>) =>
+            setQuantity(Number(event.target.value))
+          }
           required
         />
-      </div>
-      <div>
-        <label htmlFor="ventanaHoras">Ventana de recogida</label>
-        <select id="ventanaHoras" {...register('ventanaHoras')}>
+      </FormGroup>
+      <FormGroup>
+        <Label htmlFor="ventanaHoras">Ventana de recogida</Label>
+        <Input id="ventanaHoras" type="select" {...register('ventanaHoras')}>
           <option value={24}>24 horas</option>
           <option value={48}>48 horas</option>
           <option value={72}>72 horas</option>
-        </select>
-      </div>
+        </Input>
+      </FormGroup>
       <div
         className="captcha-mock"
         role="status"
@@ -91,9 +112,9 @@ export const ReserveForm = ({ varianteId }: Props) => {
       >
         reCAPTCHA desactivado en local.
       </div>
-      <button type="submit" className="button" disabled={loading}>
+      <Button type="submit" color="dark" disabled={loading} className="mt-3">
         {loading ? 'Reservando...' : 'Reservar sin pago'}
-      </button>
-    </form>
+      </Button>
+    </Form>
   );
 };
