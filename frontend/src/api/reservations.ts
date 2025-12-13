@@ -17,8 +17,11 @@ export interface ReservationItem {
   id: number;
   reserva_id: number;
   variante_id: number;
-  cantidad: number;
-  precio_reserva: number;
+  quantity: number;
+  price_snapshot: number;
+  producto_nombre?: string;
+  talla?: string;
+  color?: string;
 }
 
 export interface ReservationDetails {
@@ -30,6 +33,13 @@ export interface ReservationDetails {
   items: ReservationItem[];
 }
 
+export interface PaginatedReservations {
+  data: ReservationDetails[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
 export const createReservation = async (body: CreateReservationBody) => {
   const { data } = await apiClient.post<ReservationDetails>('reservas', body);
   return data;
@@ -38,6 +48,20 @@ export const createReservation = async (body: CreateReservationBody) => {
 export const fetchReservation = async (codigo: string) => {
   const { data } = await apiClient.get<ReservationDetails>(
     `reservas/${codigo}`
+  );
+  return data;
+};
+
+export const fetchAdminReservations = async (
+  token: string,
+  params: { page?: number; pageSize?: number } = {}
+) => {
+  const { data } = await apiClient.get<PaginatedReservations>(
+    'admin/reservas',
+    {
+      params,
+      headers: { Authorization: `Bearer ${token}` }
+    }
   );
   return data;
 };

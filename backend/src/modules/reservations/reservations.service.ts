@@ -9,7 +9,8 @@ import {
   ReservationState,
   CreateReservationInput,
   ReservationItem,
-  CreateReservationItemInput
+  CreateReservationItemInput,
+  PaginatedReservations
 } from './reservations.types.js';
 import { logger } from '../../utils/logger.js';
 
@@ -18,7 +19,10 @@ const mapReservationItem = (row: any): ReservationItem => ({
   reserva_id: row.reserva_id,
   variante_id: row.variante_id,
   quantity: row.quantity,
-  price_snapshot: Number(row.price_snapshot)
+  price_snapshot: Number(row.price_snapshot),
+  producto_nombre: row.producto_nombre,
+  talla: row.talla,
+  color: row.color
 });
 
 const mapReservation = (
@@ -64,6 +68,30 @@ const loadReservationItems = async (
   if (reservationIds.length === 0) return map;
   const { rows } = await client.query(
     'SELECT * FROM reservation_items WHERE reserva_id = ANY($1::int[])',
+    [reservationIds]
+  );
+  for (const row of rows) {
+    const item = mapReservationItem(row);
+    const existing = map.get(item.reserva_id) ?? [];
+    existing.push(item);
+    map.set(item.reserva_id, existing);
+  }
+  return map;
+};
+
+const loadReservationItemsWithDetails = async (
+  client: any,
+  reservationIds: number[]
+): Promise<Map<number, ReservationItem[]>> => {
+  const map = new Map<number, ReservationItem[]>();
+  if (reservationIds.length === 0) return map;
+  const { rows } = await client.query(
+    `SELECT ri.*, v.talla, v.color, p.nombre AS producto_nombre
+     FROM reservation_items ri
+     LEFT JOIN variantes v ON v.id = ri.variante_id
+     LEFT JOIN productos p ON p.id = v.producto_id
+     WHERE ri.reserva_id = ANY($1::int[])
+     ORDER BY ri.reserva_id, ri.id`,
     [reservationIds]
   );
   for (const row of rows) {
@@ -284,7 +312,9 @@ export const listReservations = async (filters: {
   estado?: string;
   desde?: string;
   hasta?: string;
-}) => {
+  page?: number;
+  pageSize?: number;
+}): Promise<PaginatedReservations> => {
   const conditions: string[] = [];
   const values: unknown[] = [];
   if (filters.estado) {
@@ -299,18 +329,36 @@ export const listReservations = async (filters: {
     values.push(filters.hasta);
     conditions.push(`fecha_creacion <= $${values.length}`);
   }
+
+  const page = Math.max(Number(filters.page) || 1, 1);
+  const pageSize = Math.min(Math.max(Number(filters.pageSize) || 25, 1), 100);
+  const offset = (page - 1) * pageSize;
+
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
-  const { rows } = await pool.query(
-    `SELECT * FROM reservas ${where} ORDER BY fecha_creacion DESC`,
+  const orderBy = 'ORDER BY fecha_creacion DESC';
+  const { rows: reservations } = await pool.query(
+    `SELECT * FROM reservas ${where} ${orderBy} LIMIT $${values.length + 1} OFFSET $${
+      values.length + 2
+    }`,
+    [...values, pageSize, offset]
+  );
+  const { rows: countRows } = await pool.query<{ count: string }>(
+    `SELECT COUNT(*)::text as count FROM reservas ${where}`,
     values
   );
-  const itemsMap = await loadReservationItems(
-    pool,
-    rows.map((row) => row.id)
-  );
-  return rows.map((row) =>
-    mapReservation(row, mergeReservationItems(row, itemsMap.get(row.id) ?? []))
-  );
+  const reservationIds = reservations.map((row) => row.id);
+  const itemsMap = await loadReservationItemsWithDetails(pool, reservationIds);
+  return {
+    data: reservations.map((row) =>
+      mapReservation(
+        row,
+        mergeReservationItems(row, itemsMap.get(row.id) ?? [])
+      )
+    ),
+    total: Number(countRows[0]?.count ?? 0),
+    page,
+    pageSize
+  };
 };
 
 export const expireReservations = async (): Promise<number> => {

@@ -19,6 +19,9 @@ export interface ReservationItem {
   variante_id: number;
   quantity: number;
   price_snapshot: number;
+  producto_nombre?: string;
+  talla?: string;
+  color?: string;
 }
 
 export interface CreateReservationItemInput {
@@ -32,4 +35,11 @@ export interface CreateReservationInput {
   email: string;
   telefono: string;
   ventanaHoras: 24 | 48 | 72;
+}
+
+export interface PaginatedReservations {
+  data: Reservation[];
+  total: number;
+  page: number;
+  pageSize: number;
 }
