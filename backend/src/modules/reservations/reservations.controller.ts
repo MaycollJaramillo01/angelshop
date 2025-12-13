@@ -10,7 +10,14 @@ import {
 } from './reservations.service.js';
 
 const reservationSchema = z.object({
-  varianteId: z.number().int().positive(),
+  items: z
+    .array(
+      z.object({
+        variantId: z.number().int().positive(),
+        quantity: z.number().int().positive()
+      })
+    )
+    .min(1),
   nombre: z.string().min(2),
   email: z.string().email(),
   telefono: z.string().min(6),
@@ -21,7 +28,9 @@ const reservationSchema = z.object({
 export const createReservationHandler = async (req: Request, res: Response) => {
   const parsed = reservationSchema.safeParse(req.body);
   if (!parsed.success) {
-    throw createError(422, 'Datos inválidos', { details: parsed.error.flatten() });
+    throw createError(422, 'Datos inválidos', {
+      details: parsed.error.flatten()
+    });
   }
   const { recaptchaToken: _ignored, ...data } = parsed.data;
   const result = await createReservation(data);
@@ -45,7 +54,10 @@ export const cancelReservationHandler = async (req: Request, res: Response) => {
   res.json(reservation);
 };
 
-export const collectReservationHandler = async (req: Request, res: Response) => {
+export const collectReservationHandler = async (
+  req: Request,
+  res: Response
+) => {
   const id = Number(req.params.id);
   if (!Number.isInteger(id)) {
     throw createError(400, 'Id inválido');

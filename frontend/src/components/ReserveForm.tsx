@@ -15,6 +15,7 @@ export const ReserveForm = ({ varianteId }: Props) => {
     ventanaHoras: 24 as 24 | 48 | 72
   });
   const [loading, setLoading] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const showMessage = useToastStore((s) => s.showMessage);
 
   const handleSubmit = async (event: FormEvent) => {
@@ -23,11 +24,21 @@ export const ReserveForm = ({ varianteId }: Props) => {
       showMessage('Selecciona una variante.');
       return;
     }
+    if (quantity <= 0) {
+      showMessage('Selecciona una cantidad válida.');
+      return;
+    }
     setLoading(true);
     try {
-      const data = await createReservation({ ...values, varianteId });
-      showMessage(`Reserva ${data.codigo} creada. Expira el ${new Date(data.fechaExpiracion).toLocaleString()}.`);
+      const data = await createReservation({
+        ...values,
+        items: [{ variantId: varianteId, quantity }]
+      });
+      showMessage(
+        `Reserva ${data.codigo} creada. Expira el ${new Date(data.fecha_expiracion).toLocaleString()}.`
+      );
       reset();
+      setQuantity(1);
     } catch (error) {
       showMessage('No se pudo crear la reserva.');
     } finally {
@@ -36,7 +47,11 @@ export const ReserveForm = ({ varianteId }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="reserve-form" aria-describedby="captcha-hint">
+    <form
+      onSubmit={handleSubmit}
+      className="reserve-form"
+      aria-describedby="captcha-hint"
+    >
       <div>
         <label htmlFor="nombre">Nombre</label>
         <input id="nombre" {...register('nombre')} required minLength={2} />
@@ -50,6 +65,17 @@ export const ReserveForm = ({ varianteId }: Props) => {
         <input id="telefono" {...register('telefono')} required minLength={6} />
       </div>
       <div>
+        <label htmlFor="cantidad">Cantidad</label>
+        <input
+          id="cantidad"
+          type="number"
+          min={1}
+          value={quantity}
+          onChange={(event) => setQuantity(Number(event.target.value))}
+          required
+        />
+      </div>
+      <div>
         <label htmlFor="ventanaHoras">Ventana de recogida</label>
         <select id="ventanaHoras" {...register('ventanaHoras')}>
           <option value={24}>24 horas</option>
@@ -57,7 +83,12 @@ export const ReserveForm = ({ varianteId }: Props) => {
           <option value={72}>72 horas</option>
         </select>
       </div>
-      <div className="captcha-mock" role="status" aria-live="polite" id="captcha-hint">
+      <div
+        className="captcha-mock"
+        role="status"
+        aria-live="polite"
+        id="captcha-hint"
+      >
         reCAPTCHA desactivado en local.
       </div>
       <button type="submit" className="button" disabled={loading}>
