@@ -21,3 +21,10 @@ VALUES
   ('RESERVA2', 2, 'Carlos', 'carlos@example.com', '600456456', 'activa', now() + interval '48 hours'),
   ('RESERVA3', 3, 'Sonia', 'sonia@example.com', '600789789', 'cancelada', now() + interval '24 hours')
 ON CONFLICT (codigo) DO NOTHING;
+
+INSERT INTO reservation_items (reserva_id, variante_id, cantidad, precio_reserva)
+VALUES
+  ((SELECT id FROM reservas WHERE codigo = 'RESERVA1'), 1, 1, 0),
+  ((SELECT id FROM reservas WHERE codigo = 'RESERVA2'), 2, 1, 0),
+  ((SELECT id FROM reservas WHERE codigo = 'RESERVA3'), 3, 1, 0)
+ON CONFLICT DO NOTHING;
