@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
+import { Col, Container, Row } from 'reactstrap';
 import { RealtimeBadge } from '../components/RealtimeBadge';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
@@ -14,15 +15,27 @@ const AdminProducts = lazy(() => import('../pages/AdminProducts'));
 const AdminVariants = lazy(() => import('../pages/AdminVariants'));
 const AdminReservations = lazy(() => import('../pages/AdminReservations'));
 
-const Loading = () => <div className="loading" role="status">Cargando...</div>;
+const Loading = () => (
+  <div className="loading" role="status">
+    Cargando...
+  </div>
+);
 
 const Layout = ({ children }: { children: React.ReactNode }) => (
-  <div className="app-shell">
-    <a className="skip-link" href="#contenido">Saltar al contenido</a>
+  <div className="app-shell bg-white text-dark">
+    <a className="skip-link" href="#contenido">
+      Saltar al contenido
+    </a>
     <Header />
-    <main id="contenido" className="main-content">
-      <RealtimeBadge />
-      {children}
+    <main id="contenido" className="main-content py-4">
+      <Container className="py-3">
+        <Row className="g-4">
+          <Col xs="12">
+            <RealtimeBadge />
+          </Col>
+          <Col xs="12">{children}</Col>
+        </Row>
+      </Container>
     </main>
     <Footer />
     <Toast />
