@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/v1';
+export const API_BASE_URL =
+  import.meta.env.VITE_API_URL ?? 'http://localhost:4000/v1';
+export const REALTIME_ENDPOINT = API_BASE_URL.replace(/\/v1\/?$/, '');
 
 export const apiClient = axios.create({
-  baseURL,
+  baseURL: API_BASE_URL,
   withCredentials: false
 });
 
