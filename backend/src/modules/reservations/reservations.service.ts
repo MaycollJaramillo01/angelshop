@@ -17,8 +17,8 @@ const mapReservationItem = (row: any): ReservationItem => ({
   id: row.id,
   reserva_id: row.reserva_id,
   variante_id: row.variante_id,
-  cantidad: row.cantidad,
-  precio_reserva: Number(row.precio_reserva)
+  quantity: row.quantity,
+  price_snapshot: Number(row.price_snapshot)
 });
 
 const mapReservation = (
@@ -48,8 +48,8 @@ const mergeReservationItems = (
         id: 0,
         reserva_id: row.id,
         variante_id: row.variante_id,
-        cantidad: 1,
-        precio_reserva: 0
+        quantity: 1,
+        price_snapshot: 0
       }
     ];
   }
@@ -129,7 +129,7 @@ export const createReservation = async (input: CreateReservationInput) => {
     const items: ReservationItem[] = [];
     for (const item of input.items) {
       const { rows: created } = await client.query(
-        `INSERT INTO reservation_items(reserva_id, variante_id, cantidad, precio_reserva)
+        `INSERT INTO reservation_items(reserva_id, variante_id, quantity, price_snapshot)
          VALUES($1,$2,$3,$4) RETURNING *`,
         [reservationRow.id, item.variantId, item.quantity, 0]
       );
@@ -217,7 +217,7 @@ export const updateReservationState = async (
       for (const item of items) {
         await client.query(
           'UPDATE variantes SET stock_disponible=stock_disponible+CAST($1 AS INT), stock_reservado=stock_reservado-CAST($1 AS INT), updated_at=now() WHERE id=$2',
-          [item.cantidad, item.variante_id]
+          [item.quantity, item.variante_id]
         );
       }
       for (const variantId of variantIds) {
@@ -229,7 +229,7 @@ export const updateReservationState = async (
       for (const item of items) {
         await client.query(
           'UPDATE variantes SET stock_reservado=stock_reservado-CAST($1 AS INT), updated_at=now() WHERE id=$2',
-          [item.cantidad, item.variante_id]
+          [item.quantity, item.variante_id]
         );
       }
       for (const variantId of variantIds) {
@@ -350,7 +350,7 @@ export const expireReservations = async (): Promise<number> => {
       for (const item of items) {
         await client.query(
           'UPDATE variantes SET stock_disponible=stock_disponible+CAST($1 AS INT), stock_reservado=stock_reservado-CAST($1 AS INT), updated_at=now() WHERE id=$2',
-          [item.cantidad, item.variante_id]
+          [item.quantity, item.variante_id]
         );
       }
       const reservation = mapReservation({ ...row, estado: 'expirada' }, items);
