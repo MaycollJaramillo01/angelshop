@@ -1,6 +1,6 @@
-INSERT INTO productos (nombre, descripcion) VALUES
-  ('Chaqueta Aurora', 'Chaqueta ligera para uso diario'),
-  ('Vestido Solar', 'Vestido cómodo para verano')
+INSERT INTO productos (nombre, descripcion, slug, precio, image_url, categoria) VALUES
+  ('Chaqueta Aurora', 'Chaqueta ligera para uso diario', 'chaqueta-aurora', 89.99, 'https://example.com/images/chaqueta-aurora.jpg', 'outerwear'),
+  ('Vestido Solar', 'Vestido cómodo para verano', 'vestido-solar', 59.5, 'https://example.com/images/vestido-solar.jpg', 'dresses')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO variantes (producto_id, talla, color, sku, stock_disponible, stock_reservado)
@@ -22,7 +22,7 @@ VALUES
   ('RESERVA3', 3, 'Sonia', 'sonia@example.com', '600789789', 'cancelada', now() + interval '24 hours')
 ON CONFLICT (codigo) DO NOTHING;
 
-INSERT INTO reservation_items (reserva_id, variante_id, cantidad, precio_reserva)
+INSERT INTO reservation_items (reserva_id, variante_id, quantity, price_snapshot)
 VALUES
   ((SELECT id FROM reservas WHERE codigo = 'RESERVA1'), 1, 1, 0),
   ((SELECT id FROM reservas WHERE codigo = 'RESERVA2'), 2, 1, 0),

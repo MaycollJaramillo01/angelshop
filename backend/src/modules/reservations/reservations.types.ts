@@ -17,8 +17,8 @@ export interface ReservationItem {
   id: number;
   reserva_id: number;
   variante_id: number;
-  cantidad: number;
-  precio_reserva: number;
+  quantity: number;
+  price_snapshot: number;
 }
 
 export interface CreateReservationItemInput {

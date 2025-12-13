@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS reservation_items (
   precio_reserva NUMERIC(10, 2) NOT NULL DEFAULT 0
 );
 
-CREATE INDEX IF NOT EXISTS reservation_items_reserva_idx ON reservation_items (reserva_id);
+CREATE INDEX reservation_items_reserva_idx ON reservation_items (reserva_id);

@@ -52,5 +52,5 @@ CREATE TABLE IF NOT EXISTS usuarios (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS reservas_variante_estado_idx ON reservas (variante_id, estado);
-CREATE INDEX IF NOT EXISTS reservas_fecha_expiracion_idx ON reservas (fecha_expiracion);
+CREATE INDEX reservas_variante_estado_idx ON reservas (variante_id, estado);
+CREATE INDEX reservas_fecha_expiracion_idx ON reservas (fecha_expiracion);

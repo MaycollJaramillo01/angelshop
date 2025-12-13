@@ -54,7 +54,7 @@ let seededVariantId: number;
 
 const seedData = async () => {
   const { rows: products } = await pool.query(
-    `INSERT INTO productos(nombre) VALUES('Test Producto') RETURNING id`
+    `INSERT INTO productos(nombre, slug) VALUES('Test Producto', 'test-producto') RETURNING id`
   );
   const productId = products[0].id;
   const { rows: variants } = await pool.query(
@@ -116,7 +116,7 @@ describe('Reservations service', () => {
       [seededVariantId]
     );
     await pool.query(
-      `INSERT INTO reservation_items(reserva_id, variante_id, cantidad, precio_reserva)
+      `INSERT INTO reservation_items(reserva_id, variante_id, quantity, price_snapshot)
        VALUES((SELECT id FROM reservas WHERE codigo='CODIGO1'), $1, 1, 0)`,
       [seededVariantId]
     );
