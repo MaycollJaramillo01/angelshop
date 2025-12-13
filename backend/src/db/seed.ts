@@ -10,14 +10,8 @@ const __dirname = path.dirname(__filename);
 const seedFile = path.join(__dirname, 'seed', 'seed.sql');
 
 const run = async () => {
-  const { rows } = await pool.query('SELECT COUNT(*)::int AS count FROM productos');
-  if (rows[0].count > 0) {
-    logger.info('Seed omitido, productos ya existen');
-    await pool.end();
-    return;
-  }
   const sql = fs.readFileSync(seedFile, 'utf8');
-  logger.info('Ejecutando seed inicial');
+  logger.info('Ejecutando seed determinístico');
   await pool.query(sql);
   await pool.end();
 };
