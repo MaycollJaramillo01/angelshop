@@ -70,7 +70,9 @@ export const listReservationsHandler = async (req: Request, res: Response) => {
   const data = await listReservations({
     estado: req.query.estado?.toString(),
     desde: req.query.desde?.toString(),
-    hasta: req.query.hasta?.toString()
+    hasta: req.query.hasta?.toString(),
+    page: Number(req.query.page) || 1,
+    pageSize: Number(req.query.pageSize) || undefined
   });
   res.json(data);
 };
