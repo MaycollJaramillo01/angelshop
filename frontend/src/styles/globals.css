@@ -93,6 +93,53 @@ select:focus-visible {
   box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
 }
 
+.hero-section {
+  background: linear-gradient(135deg, #f4f3f1, #f9f8f7);
+  border-radius: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.text-serif {
+  font-family: 'Playfair Display', 'Times New Roman', serif;
+  letter-spacing: -0.02em;
+}
+
+.letter-spaced {
+  letter-spacing: 0.18em;
+}
+
+.banner-section .minimal-carousel {
+  background: #f6f5f3;
+  border-radius: 1.25rem;
+}
+
+.banner-block {
+  display: inline-flex;
+  gap: 0.6rem;
+  padding: 1rem 1.5rem;
+  background: white;
+  border-radius: 999px;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+}
+
+.banner-line {
+  display: block;
+  width: 2.5rem;
+  height: 0.2rem;
+  background: #111827;
+}
+
+.product-card-elevated {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.product-card-elevated:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
+}
+
 .variant-grid {
   display: grid;
   gap: 0.75rem;
