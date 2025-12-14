@@ -9,7 +9,10 @@ const __dirname = path.dirname(__filename);
 
 const migrationsDir = path.join(__dirname, 'migrations');
 
-const run = async () => {
+export const runMigrations = async (
+  options: { closeConnection?: boolean } = {}
+) => {
+  const { closeConnection = true } = options;
   const files = fs
     .readdirSync(migrationsDir)
     .filter((f) => f.endsWith('.sql'))
@@ -33,10 +36,19 @@ const run = async () => {
       file
     ]);
   }
-  await pool.end();
+  if (closeConnection) {
+    await pool.end();
+  }
 };
 
-run().catch((error) => {
-  logger.error('Error ejecutando migraciones', { error });
-  process.exitCode = 1;
-});
+const isDirectExecution =
+  process.argv[1] &&
+  path.resolve(process.argv[1]) ===
+    path.resolve(fileURLToPath(import.meta.url));
+
+if (isDirectExecution) {
+  runMigrations().catch((error) => {
+    logger.error('Error ejecutando migraciones', { error });
+    process.exitCode = 1;
+  });
+}
