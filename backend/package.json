@@ -38,6 +38,7 @@
     "@types/node": "^20.9.0",
     "@types/node-cron": "^3.0.9",
     "@types/nodemailer": "^6.4.11",
+    "@types/morgan": "^1.9.9",
     "@types/pg": "^8.10.2",
     "@types/socket.io": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^6.10.0",

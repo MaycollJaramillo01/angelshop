@@ -22,7 +22,7 @@ const run = async () => {
       'SELECT 1 FROM schema_migrations WHERE filename=$1',
       [file]
     );
-    if (rowCount > 0) {
+    if ((rowCount ?? 0) > 0) {
       logger.info(`Migración ${file} ya aplicada, se omite`);
       continue;
     }
