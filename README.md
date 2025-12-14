@@ -18,7 +18,7 @@ Servicios:
 - Frontend: http://localhost:5173
 - Backend API + Socket.io: http://localhost:4000
 - MailHog UI: http://localhost:8025
-- PostgreSQL: localhost:5432 (postgres/postgres)
+- PostgreSQL 17: localhost:5432 (postgres/postgres)
 
 El backend aplica migraciones y seed manualmente mediante:
 
