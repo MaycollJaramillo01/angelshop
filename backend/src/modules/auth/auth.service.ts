@@ -1,7 +1,11 @@
 import bcrypt from 'bcryptjs';
 import createError from 'http-errors';
 import { pool } from '../../db/pool.js';
-import { signAccessToken, signRefreshToken, verifyRefreshToken } from './jwt.js';
+import {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken
+} from './jwt.js';
 
 interface User {
   id: number;
@@ -13,7 +17,10 @@ interface User {
 }
 
 export const authenticate = async (email: string, password: string) => {
-  const { rows } = await pool.query<User>('SELECT * FROM usuarios WHERE email=$1', [email]);
+  const { rows } = await pool.query<User>(
+    'SELECT * FROM usuarios WHERE email=$1',
+    [email]
+  );
   const user = rows[0];
   if (!user || !user.activo) {
     throw createError(401, 'Credenciales inválidas');
@@ -22,7 +29,7 @@ export const authenticate = async (email: string, password: string) => {
   if (!valid) {
     throw createError(401, 'Credenciales inválidas');
   }
-  const payload = { sub: user.id, role: user.rol };
+  const payload = { sub: user.id.toString(), role: user.rol };
   return {
     accessToken: signAccessToken(payload),
     refreshToken: signRefreshToken(payload),
