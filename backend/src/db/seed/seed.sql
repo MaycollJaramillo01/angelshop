@@ -5,10 +5,12 @@ VALUES
   ('Admin', 'admin@angelshop.local', '$2a$10$7qDWUpAJZciV06P88GJE7e.fh3UeJ8V4aHcRUW2KIiMzFxLpy0X3C', 'admin');
 
 INSERT INTO productos (nombre, descripcion, slug, precio, image_url, categoria) VALUES
-  ('Parka Aurora', 'Parka impermeable con forro térmico para climas fríos y lluviosos.', 'parka-aurora', 159.90, 'https://images.pexels.com/photos/1342609/pexels-photo-1342609.jpeg', 'outerwear'),
-  ('Zapatillas Brisa', 'Zapatillas ligeras con suela acolchada ideales para caminar en la ciudad.', 'zapatillas-brisa', 119.00, 'https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg', 'footwear'),
-  ('Camiseta Lienzo', 'Camiseta orgánica de algodón con cuello redondo y caída relajada.', 'camiseta-lienzo', 35.00, 'https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg', 'tops'),
-  ('Pantalón Eco Terra', 'Pantalón cargo de algodón reciclado con bolsillos amplios y corte recto.', 'pantalon-eco-terra', 89.50, 'https://images.pexels.com/photos/6311398/pexels-photo-6311398.jpeg', 'pants');
+  ('Parka Aurora', 'Parka impermeable con forro térmico para climas fríos y lluviosos.', 'parka-aurora', 159.90, 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80', 'outerwear'),
+  ('Zapatillas Brisa', 'Zapatillas ligeras con suela acolchada ideales para caminar en la ciudad.', 'zapatillas-brisa', 119.00, 'https://images.unsplash.com/photo-1528701800489-20be9a9683b0?auto=format&fit=crop&w=1200&q=80', 'footwear'),
+  ('Camiseta Lienzo', 'Camiseta orgánica de algodón con cuello redondo y caída relajada.', 'camiseta-lienzo', 35.00, 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1200&q=80', 'tops'),
+  ('Pantalón Eco Terra', 'Pantalón cargo de algodón reciclado con bolsillos amplios y corte recto.', 'pantalon-eco-terra', 89.50, 'https://images.unsplash.com/photo-1521572265885-25520731b13b?auto=format&fit=crop&w=1200&q=80', 'pants'),
+  ('Mochila Andes Trail', 'Mochila técnica con soporte lumbar y compartimento para hidratación.', 'mochila-andes-trail', 145.00, 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80', 'bags'),
+  ('Chaqueta Boreal Softshell', 'Chaqueta softshell cortaviento y repelente al agua para actividades outdoor.', 'chaqueta-boreal-softshell', 175.00, 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&q=80', 'outerwear');
 
 INSERT INTO variantes (producto_id, talla, color, sku, stock_disponible, stock_reservado)
 VALUES
@@ -23,20 +25,26 @@ VALUES
   (3, 'L', 'Azul Noche', 'LIENZO-L-AZUL', 0, 0),
   (4, '30', 'Negro Bosque', 'TERRA-30-NEGRO', 3, 0),
   (4, '32', 'Oliva', 'TERRA-32-OLIVA', 1, 0),
-  (4, '34', 'Arena', 'TERRA-34-ARENA', 0, 0);
+  (4, '34', 'Arena', 'TERRA-34-ARENA', 0, 0),
+  (5, '22L', 'Granito', 'ANDES-22-GRANITO', 4, 0),
+  (5, '28L', 'Verde Bosque', 'ANDES-28-VERDE', 6, 0),
+  (6, 'M', 'Azul Glaciar', 'BOREAL-M-AZUL', 2, 0),
+  (6, 'L', 'Azul Glaciar', 'BOREAL-L-AZUL', 5, 0),
+  (6, 'XL', 'Gris Tormenta', 'BOREAL-XL-GRIS', 3, 0);
 
 INSERT INTO reservas (codigo, variante_id, nombre, email, telefono, estado, fecha_expiracion)
 VALUES
   ('RES-URB-001', 1, 'Lucía Vega', 'lucia@ejemplo.com', '600111222', 'activa', now() + interval '24 hours'),
   ('RES-URB-002', 5, 'Miguel Soto', 'miguel@ejemplo.com', '600333444', 'activa', now() + interval '36 hours'),
   ('RES-URB-003', 9, 'Valeria Cruz', 'valeria@ejemplo.com', '600555666', 'cancelada', now() + interval '12 hours'),
-  ('RES-URB-004', 10, 'Diego Marín', 'diego@ejemplo.com', '600777888', 'activa', now() + interval '48 hours');
+  ('RES-URB-004', 15, 'Diego Marín', 'diego@ejemplo.com', '600777888', 'activa', now() + interval '48 hours');
 
 INSERT INTO reservation_items (reserva_id, variante_id, quantity, price_snapshot)
 VALUES
   ((SELECT id FROM reservas WHERE codigo = 'RES-URB-001'), 1, 2, 159.90),
   ((SELECT id FROM reservas WHERE codigo = 'RES-URB-001'), 7, 1, 35.00),
   ((SELECT id FROM reservas WHERE codigo = 'RES-URB-002'), 5, 1, 119.00),
+  ((SELECT id FROM reservas WHERE codigo = 'RES-URB-002'), 13, 1, 145.00),
   ((SELECT id FROM reservas WHERE codigo = 'RES-URB-003'), 9, 1, 35.00),
-  ((SELECT id FROM reservas WHERE codigo = 'RES-URB-004'), 10, 1, 89.50),
+  ((SELECT id FROM reservas WHERE codigo = 'RES-URB-004'), 15, 1, 175.00),
   ((SELECT id FROM reservas WHERE codigo = 'RES-URB-004'), 4, 1, 119.00);
